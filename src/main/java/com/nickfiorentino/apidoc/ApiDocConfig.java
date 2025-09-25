@@ -17,6 +17,10 @@ import java.util.List;
  * controller classes and annotations to build API documentation
  * at the following URL: http://www.localhost:8080/swagger-ui/index.html
  *
+ * After I updated the project for Koyeb you can now use URL: melodic-elnora-nick-fiorentino-cb52ab23.koyeb.app/swagger-ui/index.html
+ *
+ *
+ *
  * Add the @Hidden annotation above any class or controller method to
  * omit documentation for one or more endpoints
  *

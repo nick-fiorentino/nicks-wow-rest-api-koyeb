@@ -19,6 +19,12 @@ This project exposes a **RESTful API** to handle client-server communication.
 - Uses HTTPS-enabled global edge network for secure and fast delivery.
 
 
+## Rest API UI
+https://melodic-elnora-nick-fiorentino-cb52ab23.koyeb.app/swagger-ui/index.html
+
+## Rest API Documentation
+https://nick-fiorentino.github.io/nicks-wow-rest-api-koyeb/api/
+
 
 
 

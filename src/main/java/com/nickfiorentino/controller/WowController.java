@@ -22,6 +22,25 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.util.*;
 
+
+/**
+ * Main REST controller for Nick's WoW API application.
+ *
+ * <p>Exposes public and authenticated endpoints for managing and viewing:
+ * <ul>
+ *     <li>Official World of Warcraft races, classes, and items via Blizzard's API</li>
+ *     <li>User-created characters stored in a PostgreSQL database</li>
+ *     <li>Inventory items equipped to characters</li>
+ * </ul>
+ *
+ * <p>This controller connects the front-end or client to both internal database services
+ * and external Blizzard REST APIs. Uses Spring Security for access control and
+ * validation via Jakarta Validation.</p>
+ *
+ * <p>Base URL for all endpoints: <code>/nickswowapi</code></p>
+ *
+ * @author Nick
+ */
 @RestController
 @RequestMapping("/nickswowapi")
 public class WowController {
@@ -57,6 +76,11 @@ public class WowController {
     }
 
 
+    /**
+     * Retrieves all official World of Warcraft races from Blizzard’s Classic API.
+     *
+     * @return a {@link RaceIndexPojo} containing the list of races
+     */
     @PreAuthorize("permitAll")
     @RequestMapping(path = "/officialraces", method = RequestMethod.GET)
     public RaceIndexPojo getAllOfficialRaces() {
@@ -65,6 +89,12 @@ public class WowController {
 
     }
 
+
+    /**
+     * Retrieves all official World of Warcraft classes from Blizzard’s Classic API.
+     *
+     * @return a {@link ClassIndexPojo} containing the list of classes
+     */
     @PreAuthorize("permitAll")
     @RequestMapping(path = "/officialclasses", method = RequestMethod.GET)
     public ClassIndexPojo getAllOfficialClasses() {
@@ -74,6 +104,14 @@ public class WowController {
     }
 
 
+    /**
+     * Retrieves a list of WoW items from the Blizzard API within a given ID range.
+     * Ignores any items that return a 404 or error.
+     *
+     * @param startId starting item ID (inclusive)
+     * @param endId   ending item ID (inclusive)
+     * @return a list of {@link ItemPojo} objects with valid data
+     */
     @PreAuthorize("permitAll")
     @RequestMapping(path = "/officialitems", method = RequestMethod.GET)
     public List<ItemPojo> getItemsInRange(int startId, int endId) {
@@ -97,6 +135,14 @@ public class WowController {
     }
 
 
+    /**
+     * Creates a new character for the authenticated user.
+     *
+     * @param incomingCharacter DTO containing character name, race ID, and class ID
+     * @param principal the authenticated user making the request
+     * @return the created {@link Character} object
+     * @throws ResponseStatusException if name is taken or DAO fails
+     */
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(path = "/characters", method = RequestMethod.POST)
@@ -132,12 +178,12 @@ public class WowController {
     public Map<String, Object> getSpecificCharacter(@PathVariable("id") int id) {
 
         try {
-        Character character = characterDao.getCharacterById(id);
+            Character character = characterDao.getCharacterById(id);
 
 
-        if (character == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Character Id does not exist.");
-        }
+            if (character == null){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Character Id does not exist.");
+            }
 
             // initializes the Class variable names for use in the LinkedHashMap
             Race race = raceDao.getRaceById(character.getRaceId());
@@ -188,6 +234,15 @@ public class WowController {
     }
 
 
+    /**
+     * Updates the equipped inventory items for a specific character.
+     *
+     * @param incomingInventory updated inventory with new item IDs
+     * @param id the character ID to update
+     * @param principal the user making the request
+     * @return updated {@link EquippedInventory} object
+     * @throws ResponseStatusException if character doesn't exist or isn't owned by user
+     */
     @PreAuthorize("isAuthenticated()")
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(path = "/equippedinventory/{id}", method = RequestMethod.PUT)
@@ -229,7 +284,7 @@ public class WowController {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Equipped Inventory Id does not exist.");
             }
 
-    // initializes the Class variable names for use in the LinkedHashMap
+            // initializes the Class variable names for use in the LinkedHashMap
             Character character = characterDao.getCharacterById(equippedInventory.getCharacterId());
             Item item1 = itemDao.getItemById(equippedInventory.getItem1Id());
             Item item2 = itemDao.getItemById(equippedInventory.getItem2Id());
@@ -237,7 +292,7 @@ public class WowController {
             Item item4 = itemDao.getItemById(equippedInventory.getItem4Id());
 
 
-    // LinkedHashMap preserves the order while HashMap can display the order at random
+            // LinkedHashMap preserves the order while HashMap can display the order at random
             Map<String, Object> equippedItemsMap = new LinkedHashMap<>();
             equippedItemsMap.put("equipped inventory", equippedInventory);
             equippedItemsMap.put("character", character);

@@ -5,6 +5,26 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
+
+
+/**
+ * Service class responsible for retrieving item data from Blizzard's
+ * World of Warcraft (Classic) API.
+ *
+ * <p>This class uses a {@link RestClient} to send authorized requests to Blizzard's
+ * <code>/data/wow/item/{itemId}</code> endpoint. The service returns item data
+ * as a {@link ItemPojo} object.</p>
+ *
+ * <p>It retrieves and applies a bearer token from {@link RestBlizzardAuthenticationService}
+ * for authenticated access.</p>
+ *
+ * <p>This service is typically used by controllers to fetch detailed
+ * item data by ID when building or displaying a WoW character's inventory.</p>
+ *
+ * @author Nick
+ * @see ItemPojo
+ * @see RestBlizzardAuthenticationService
+ */
 @Component
 public class RestAllItemsService {
 
@@ -17,6 +37,16 @@ public class RestAllItemsService {
     private final String ACCESS_TOKEN;
     private final RestClient restClient;
 
+
+
+    /**
+     * Constructs a new RestAllItemsService with the given authentication service.
+     *
+     * <p>This constructor fetches a bearer token from Blizzard and initializes
+     * the {@link RestClient} with the required base URL and authorization headers.</p>
+     *
+     * @param blizzardAuthentication the service used to obtain the bearer token
+     */
     public RestAllItemsService(RestBlizzardAuthenticationService blizzardAuthentication) {
         this.blizzardAuthentication = blizzardAuthentication;
         this.ACCESS_TOKEN = blizzardAuthentication.getStringBearerToken();
@@ -28,8 +58,17 @@ public class RestAllItemsService {
 
     }
 
-    //throws RestClientResponseException tells me if there is
-    // a 404 Not Found or 500 Server Error
+
+    /**
+     * Retrieves a single item from Blizzard's WoW API by its unique item ID.
+     *
+     * <p>The request is sent to the <code>/data/wow/item/{itemId}</code> endpoint,
+     * and the response is mapped to a {@link ItemPojo}.</p>
+     *
+     * @param itemId the unique ID of the item to fetch
+     * @return an {@link ItemPojo} representing the item's data
+     * @throws RestClientResponseException if the API returns an error (e.g., 404 or 500)
+     */
     public ItemPojo getItem(int itemId) throws RestClientResponseException {
 
         ItemPojo itemPojo = restClient.get()
@@ -41,40 +80,5 @@ public class RestAllItemsService {
     }
 
 
-    // Convert the previously returned MyBearerTokenPojo object to a String
-    // that can be used in other Rest Classes
-
-
-     //   public String getStringBearerToken() throws RestClientResponseException {
-     //   MyBearerTokenPojo stringBearerTokenPojo = getBearerToken();
-    //    return stringBearerTokenPojo.getAccessToken();
-   // }
-
-
-
-
-
-    //-----------------experimentation below
-    //    public List<ItemPojo> getAllItems() throws RestClientResponseException {
-   //     int itemId;
-    //    List<String> itemNames = new ArrayList<>();
-   //
-   //     for (itemId = 19002; itemId <= 19100; itemId++) {
-
-            // Used try incase some ItemId numbers don't exist
-    //        try {
-    //            ItemPojo itemPojo = new RestIAllItemsService().getItem(itemId);
-
-    //           if (itemPojo != null && itemPojo.getName() != null) {
-
-    //                itemNames.add(itemPojo.getName());
-   //             }
-// Used ignored in the catch so it would continue to iterate over item numbers that return 404
-    //        }catch (RestClientResponseException ignored) {
-
-   //         }
-    //    }
-   //         return itemNames;
-  //  }
 
 }

@@ -5,6 +5,25 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 
+
+/**
+ * Service class responsible for retrieving all playable classes from
+ * Blizzard's World of Warcraft (Classic) API.
+ *
+ * <p>This service connects to the <code>/data/wow/playable-class/index</code>
+ * endpoint using a {@link RestClient} and retrieves the list of all official
+ * playable classes, returning them as a {@link ClassIndexPojo} object.</p>
+ *
+ * <p>Authentication is handled via a bearer token provided by
+ * {@link RestBlizzardAuthenticationService}.</p>
+ *
+ * <p>This class is typically used by controllers that need to fetch
+ * class options for building or displaying WoW characters.</p>
+ *
+ * @author Nick
+ * @see ClassIndexPojo
+ * @see RestBlizzardAuthenticationService
+ */
 @Component
 public class RestAllClassesService {
 
@@ -19,6 +38,16 @@ public class RestAllClassesService {
     private final String ACCESS_TOKEN;
     private final RestClient restClient;
 
+
+    /**
+     * Constructs a new RestAllClassesService with the given authentication service.
+     *
+     * <p>Fetches an access token from the authentication service and sets up
+     * the {@link RestClient} with the proper base URL and authorization headers
+     * for future API calls.</p>
+     *
+     * @param blizzardAuthentication the service used to obtain the bearer token
+     */
     public RestAllClassesService(RestBlizzardAuthenticationService blizzardAuthentication) {
         this.blizzardAuthentication = blizzardAuthentication;
         this.ACCESS_TOKEN = blizzardAuthentication.getStringBearerToken();
@@ -32,8 +61,15 @@ public class RestAllClassesService {
 
 
 
-    //throws RestClientResponseException tells me if there is
-    // a 404 Not Found or 500 Server Error
+    /**
+     * Retrieves a list of all playable classes from Blizzard's WoW Classic API.
+     *
+     * <p>Sends a GET request to the <code>/data/wow/playable-class/index</code>
+     * endpoint and maps the response to a {@link ClassIndexPojo} object.</p>
+     *
+     * @return a {@link ClassIndexPojo} containing metadata for all available classes
+     * @throws RestClientResponseException if the API returns an error (e.g., 404 or 500)
+     */
     public ClassIndexPojo getAllClasses() throws RestClientResponseException {
 
         ClassIndexPojo classIndexPojo = restClient.get()
@@ -45,29 +81,6 @@ public class RestAllClassesService {
     }
 
 
-    // Convert the previously returned MyBearerTokenPojo object to a String
-    // that can be used in other Rest Classes
- //   public String getStringBearerToken() throws RestClientResponseException {
-  //      MyBearerTokenPojo stringBearerTokenPojo = getBearerToken();
-  //      return stringBearerTokenPojo.getAccessToken();
-  //  }
 
-
-    // ignore comments below unless needed
-
-
-   // public static void main(String[] args) {
-    //    ClassIndexPojo classIndexPojo = new AllClassesDemo().getAllClasses();
-
-        //for each loop iterates through each OneClass object in the List<OneClass> that's in ClassIndex
-        //each object is temporarily stored in the variable oneClass
-        //then the getName() method in OneClass is called to return the name to be printed
-        //each iteration it prints the next class name
-     //   for (OneClassPojo oneClassPojo : classIndexPojo.getClasses()) {
-     //       System.out.println(oneClassPojo.getName());
-    //    }
-
-
- //   }
 
 }

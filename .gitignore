@@ -46,6 +46,7 @@ target/
 .env
 database/
 design/
+GenerateSecret.java
 
 
 ### IntelliJ IDEA ###

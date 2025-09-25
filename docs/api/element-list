@@ -1,0 +1,14 @@
+com.nickfiorentino
+com.nickfiorentino.apidoc
+com.nickfiorentino.controller
+com.nickfiorentino.dao
+com.nickfiorentino.exception
+com.nickfiorentino.model
+com.nickfiorentino.model.dto
+com.nickfiorentino.model.erdclasses
+com.nickfiorentino.model.extrapojoclassandraceclasses
+com.nickfiorentino.model.extrapojoitemclasses
+com.nickfiorentino.model.mainpojoclasses
+com.nickfiorentino.security
+com.nickfiorentino.security.jwt
+com.nickfiorentino.service
